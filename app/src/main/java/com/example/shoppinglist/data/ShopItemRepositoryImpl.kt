@@ -7,8 +7,12 @@ class ShopItemRepositoryImpl: ShopItemRepository {
 
     private val shopItems = mutableListOf<ShopItem>()
     private var newItemId = 0
-
-
+    init {
+        for (i in 0 until 10) {
+            val currentShopItem = ShopItem("Name$i", i, true)
+            addShopItem(currentShopItem)
+        }
+    }
     override fun addShopItem(shopItem: ShopItem) {
         if (shopItem.id == ShopItem.UNSPECIFIED_ID) {
             shopItem.id = newItemId++
