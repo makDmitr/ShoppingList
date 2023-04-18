@@ -10,6 +10,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
+        var tmp = 0
     }
 
     private lateinit var viewModel: MainViewModel
@@ -19,9 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        viewModel.getShopItems()
-
-        viewModel.shopItemsList().observe(this) {
+        viewModel.shopItemsList.observe(this) {
             Log.d(TAG, "shopItemsList: ${it.toString()}")
         }
 
