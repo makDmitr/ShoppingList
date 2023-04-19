@@ -17,6 +17,8 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
 
         const val ACTIVE_VIEW_TYPE = 1
         const val NOT_ACTIVE_VIEW_TYPE = 0
+
+        const val MAX_POOL_SIZE = 10
     }
 
     var shopItems = listOf<ShopItem>()

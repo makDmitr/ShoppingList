@@ -39,6 +39,14 @@ class MainActivity : AppCompatActivity() {
             adapter = this@MainActivity.adapter
             layoutManager = LinearLayoutManager(this@MainActivity)
 
+            recycledViewPool.setMaxRecycledViews(
+                ShopItemsAdapter.ACTIVE_VIEW_TYPE,
+                ShopItemsAdapter.MAX_POOL_SIZE
+            )
+            recycledViewPool.setMaxRecycledViews(
+                ShopItemsAdapter.NOT_ACTIVE_VIEW_TYPE,
+                ShopItemsAdapter.MAX_POOL_SIZE
+            )
         }
     }
 
