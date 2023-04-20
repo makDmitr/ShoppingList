@@ -26,9 +26,14 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
             field = value
             notifyDataSetChanged()
         }
+        get() {
+            return field.toList()
+        }
 
+    var onLongClickListener: ((ShopItem) -> Unit)? = null
+    var onClickListener: ((ShopItem) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        Log.d(TAG, "onCreateViewHolder: ${++count}")
+        //Log.d(TAG, "onCreateViewHolder: ${++count}")
         val layoutId = when (viewType) {
             ACTIVE_VIEW_TYPE -> {
                 R.layout.active_item
@@ -51,6 +56,7 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
     }
 
     override fun getItemViewType(position: Int): Int {
+//        Log.d(TAG, "getItemViewType: $position")
         val itemToShow = shopItems[position]
         return if (itemToShow.isActive) {
             ACTIVE_VIEW_TYPE
@@ -61,7 +67,11 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
         val itemToShow = shopItems[position]
-        holder.bindViews(itemToShow)
+        holder.bindViews(
+            itemToShow,
+            onLongClickListener,
+            onClickListener
+        )
     }
 
     override fun getItemCount(): Int {
@@ -72,11 +82,22 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
         val tvItemName = view.findViewById<TextView>(R.id.tvItemName)
         val tvItemQuantity = view.findViewById<TextView>(R.id.tvItemQuantity)
 
-        fun bindViews(itemToShow: ShopItem) {
+        fun bindViews(
+            itemToShow: ShopItem,
+            onLongClickListener: ((ShopItem) -> Unit)? = null,
+            onClickListener: ((ShopItem) -> Unit)? = null
+        ) {
             tvItemName.text = itemToShow.name
             tvItemQuantity.text = itemToShow.quantity.toString()
 
+            view.setOnLongClickListener {
+                onLongClickListener?.invoke(itemToShow)
+                true
+            }
 
+            view.setOnClickListener {
+                onClickListener?.invoke(itemToShow)
+            }
         }
     }
 }

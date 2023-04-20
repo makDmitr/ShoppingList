@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
@@ -12,7 +13,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        var tmp = false
     }
 
     private lateinit var viewModel: MainViewModel
@@ -48,7 +48,85 @@ class MainActivity : AppCompatActivity() {
                 ShopItemsAdapter.MAX_POOL_SIZE
             )
         }
+
+        setupAdapterOnLongClickListener()
+        setupAdapterOnClickListener()
+        setupRecyclerViewSwipes(rvShopItems)
     }
 
+    private fun setupRecyclerViewSwipes(rvShopItems: RecyclerView) {
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                TODO("Not yet implemented")
+            }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val shopItemToDelete = adapter.shopItems[position]
+                viewModel.deleteShopItem(shopItemToDelete)
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(rvShopItems)
+    }
+
+    private fun setupAdapterOnClickListener() {
+        adapter.onClickListener = {
+            Log.d("onClickListenerStub", "clicked: $it")
+        }
+    }
+
+    private fun setupAdapterOnLongClickListener() {
+        adapter.onLongClickListener = {
+            viewModel.changeActiveState(it)
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
