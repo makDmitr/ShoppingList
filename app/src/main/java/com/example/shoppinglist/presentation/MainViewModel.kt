@@ -25,7 +25,6 @@ class MainViewModel: ViewModel() {
     }
 
     fun changeActiveState(shopItem: ShopItem) {
-        //TODO:Протестировать метод
         shopItem.isActive = !shopItem.isActive
         editShopItemUseCase.editShopItem(shopItem)
     }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
@@ -23,8 +24,10 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
 
     var shopItems = listOf<ShopItem>()
         set(value) {
+            val callback = ShopItemDiffUtilCallback(field, value)
+            val diffResult = DiffUtil.calculateDiff(callback)
+            diffResult.dispatchUpdatesTo(this)
             field = value
-            notifyDataSetChanged()
         }
         get() {
             return field.toList()
@@ -33,7 +36,7 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
     var onLongClickListener: ((ShopItem) -> Unit)? = null
     var onClickListener: ((ShopItem) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        //Log.d(TAG, "onCreateViewHolder: ${++count}")
+//        Log.d(TAG, "onCreateViewHolder: ${++count}")
         val layoutId = when (viewType) {
             ACTIVE_VIEW_TYPE -> {
                 R.layout.active_item
@@ -66,6 +69,7 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
+//        Log.d(TAG, "onBindViewHolder: ${++count}")
         val itemToShow = shopItems[position]
         holder.bindViews(
             itemToShow,
