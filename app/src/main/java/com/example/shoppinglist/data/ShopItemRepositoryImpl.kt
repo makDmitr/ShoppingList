@@ -1,13 +1,17 @@
 package com.example.shoppinglist.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.domain.ShopItemRepository
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.random.Random
 
-class ShopItemRepositoryImpl: ShopItemRepository {
+object ShopItemRepositoryImpl: ShopItemRepository {
 
+    //TODO 1) Данные у меня хранятся просто в виде TreeSet в оперативке, никаких БД и Серверов (всего 7 пунктов + вывод, открывай окно TODO)
     private val shopItems = sortedSetOf<ShopItem>({ o1, o2 ->
         o1.id.compareTo(o2.id)
     })
@@ -15,7 +19,7 @@ class ShopItemRepositoryImpl: ShopItemRepository {
 
     private val shopItemsLiveData = MutableLiveData<List<ShopItem>>()
     init {
-        for (i in 0 until 1000) {
+        for (i in 0 until 5) {
             val currentShopItem = ShopItem("Name$i", i, Random.nextBoolean())
             addShopItem(currentShopItem)
         }
@@ -25,6 +29,8 @@ class ShopItemRepositoryImpl: ShopItemRepository {
             shopItem.id = newItemId++
         }
         shopItems.add(shopItem)
+
+        //TODO: 2)Возвращаю я данные через обновление значения лайвдаты. Каждый раз при изменении данных я кладу в лайвдату _новый_ список, который является копией TreeSet
         shopItemsLiveData.value = shopItems.toList()
     }
 
@@ -35,7 +41,7 @@ class ShopItemRepositoryImpl: ShopItemRepository {
 
     override fun editShopItem(shopItem: ShopItem) {
         val oldShopItem = getShopItemById(shopItem.id)
-        deleteShopItem(oldShopItem)
+        shopItems.remove(oldShopItem)
         addShopItem(shopItem)
     }
 

@@ -2,19 +2,18 @@ package com.example.shoppinglist.presentation
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 
-class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolder>() {
+class ShopItemsAdapter :
+    ListAdapter<ShopItem, ShopItemViewHolder>( ShopItemDiffItemCallback() ) {
 
     companion object {
         const val TAG = "ShopItemsAdapter"
-        private var count = 0
+        private var countOnCreate = 0
+        private var countOnBind = 0
 
         const val ACTIVE_VIEW_TYPE = 1
         const val NOT_ACTIVE_VIEW_TYPE = 0
@@ -22,21 +21,10 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
         const val MAX_POOL_SIZE = 10
     }
 
-    var shopItems = listOf<ShopItem>()
-        set(value) {
-            val callback = ShopItemDiffUtilCallback(field, value)
-            val diffResult = DiffUtil.calculateDiff(callback)
-            diffResult.dispatchUpdatesTo(this)
-            field = value
-        }
-        get() {
-            return field.toList()
-        }
-
     var onLongClickListener: ((ShopItem) -> Unit)? = null
     var onClickListener: ((ShopItem) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-//        Log.d(TAG, "onCreateViewHolder: ${++count}")
+        Log.d(TAG, "onCreateViewHolder: ${++countOnCreate}")
         val layoutId = when (viewType) {
             ACTIVE_VIEW_TYPE -> {
                 R.layout.active_item
@@ -59,8 +47,8 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
     }
 
     override fun getItemViewType(position: Int): Int {
-//        Log.d(TAG, "getItemViewType: $position")
-        val itemToShow = shopItems[position]
+        Log.d(TAG, "getItemViewType: $position")
+        val itemToShow = getItem(position)
         return if (itemToShow.isActive) {
             ACTIVE_VIEW_TYPE
         } else {
@@ -69,8 +57,8 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-//        Log.d(TAG, "onBindViewHolder: ${++count}")
-        val itemToShow = shopItems[position]
+        Log.d(TAG, "onBindViewHolder: ${++countOnBind}")
+        val itemToShow = getItem(position)
         holder.bindViews(
             itemToShow,
             onLongClickListener,
@@ -78,30 +66,5 @@ class ShopItemsAdapter : RecyclerView.Adapter<ShopItemsAdapter.ShopItemViewHolde
         )
     }
 
-    override fun getItemCount(): Int {
-        return shopItems.size
-    }
 
-    class ShopItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-        val tvItemName = view.findViewById<TextView>(R.id.tvItemName)
-        val tvItemQuantity = view.findViewById<TextView>(R.id.tvItemQuantity)
-
-        fun bindViews(
-            itemToShow: ShopItem,
-            onLongClickListener: ((ShopItem) -> Unit)? = null,
-            onClickListener: ((ShopItem) -> Unit)? = null
-        ) {
-            tvItemName.text = itemToShow.name
-            tvItemQuantity.text = itemToShow.quantity.toString()
-
-            view.setOnLongClickListener {
-                onLongClickListener?.invoke(itemToShow)
-                true
-            }
-
-            view.setOnClickListener {
-                onClickListener?.invoke(itemToShow)
-            }
-        }
-    }
 }

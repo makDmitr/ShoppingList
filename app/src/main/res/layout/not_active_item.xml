@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="4dp"
     android:layout_marginTop="4dp"
-    app:cardBackgroundColor="@color/purple_200_alpha_30"
     app:cardCornerRadius="4dp"
     app:cardElevation="1dp"
     app:cardUseCompatPadding="true">
@@ -14,6 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/purple_200_alpha_30"
         android:orientation="horizontal"
         android:padding="12dp">
 
