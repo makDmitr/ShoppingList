@@ -11,7 +11,6 @@ import kotlin.random.Random
 
 object ShopItemRepositoryImpl: ShopItemRepository {
 
-    //TODO 1) Данные у меня хранятся просто в виде TreeSet в оперативке, никаких БД и Серверов (всего 7 пунктов + вывод, открывай окно TODO)
     private val shopItems = sortedSetOf<ShopItem>({ o1, o2 ->
         o1.id.compareTo(o2.id)
     })
@@ -30,7 +29,6 @@ object ShopItemRepositoryImpl: ShopItemRepository {
         }
         shopItems.add(shopItem)
 
-        //TODO: 2)Возвращаю я данные через обновление значения лайвдаты. Каждый раз при изменении данных я кладу в лайвдату _новый_ список, который является копией TreeSet
         shopItemsLiveData.value = shopItems.toList()
     }
 
