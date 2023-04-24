@@ -24,7 +24,7 @@ class ShopItemsAdapter :
     var onLongClickListener: ((ShopItem) -> Unit)? = null
     var onClickListener: ((ShopItem) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
-        Log.d(TAG, "onCreateViewHolder: ${++countOnCreate}")
+//        Log.d(TAG, "onCreateViewHolder: ${++countOnCreate}")
         val layoutId = when (viewType) {
             ACTIVE_VIEW_TYPE -> {
                 R.layout.active_item
@@ -47,7 +47,7 @@ class ShopItemsAdapter :
     }
 
     override fun getItemViewType(position: Int): Int {
-        Log.d(TAG, "getItemViewType: $position")
+//        Log.d(TAG, "getItemViewType: $position")
         val itemToShow = getItem(position)
         return if (itemToShow.isActive) {
             ACTIVE_VIEW_TYPE
@@ -57,7 +57,7 @@ class ShopItemsAdapter :
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        Log.d(TAG, "onBindViewHolder: ${++countOnBind}")
+//        Log.d(TAG, "onBindViewHolder: ${++countOnBind}")
         val itemToShow = getItem(position)
         holder.bindViews(
             itemToShow,
