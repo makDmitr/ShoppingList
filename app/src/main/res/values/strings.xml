@@ -2,6 +2,6 @@
     <string name="app_name">Shopping List</string>
     <string name="add_element_content_description">Add Element</string>
     <string name="hint_product_name">Product name:</string>
-    <string name="button_add_to_list">add to list</string>
+    <string name="button_save_to_list">save to list</string>
     <string name="hint_quantity">Quantity:</string>
 </resources>
