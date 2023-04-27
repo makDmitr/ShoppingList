@@ -1,14 +1,15 @@
 package com.example.shoppinglist.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainViewModel
 
     private lateinit var adapter: ShopItemsAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,6 +30,12 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         setupRecyclerView()
+
+        val fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
+        fabAdd.setOnClickListener {
+            val intent = ShopItemActivity.newIntentAddMode(this)
+            startActivity(intent)
+        }
 
         viewModel.shopItemsList.observe(this) {
             listsInSubmitList.add(it)
@@ -82,7 +90,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupAdapterOnClickListener() {
         adapter.onClickListener = {
-            Log.d("onClickListenerStub", "clicked: $it")
+            val intent = ShopItemActivity.newIntentEditMode(
+                this,
+                it.id
+            )
+            Log.d("TMP", "setupAdapterOnClickListener: ${it.toString()}")
+            startActivity(intent)
         }
     }
 
