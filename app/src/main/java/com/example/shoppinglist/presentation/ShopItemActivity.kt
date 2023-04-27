@@ -15,7 +15,7 @@ import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemActivity : AppCompatActivity() {
 
-    private lateinit var tilName: TextInputLayout
+    /*private lateinit var tilName: TextInputLayout
     private lateinit var tilQuantity: TextInputLayout
     //TextInput or EditText?
     private lateinit var etName: TextInputEditText
@@ -26,21 +26,21 @@ class ShopItemActivity : AppCompatActivity() {
     private lateinit var viewModel: ShopItemViewModel
 
     private var screenMode = UNSPECIFIED_MODE
-    private var shopItemId = ShopItem.UNSPECIFIED_ID
+    private var shopItemId = ShopItem.UNSPECIFIED_ID*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
-        parseIntent()
+        /*parseIntent()
 
         initViews()
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
 
         addTextChangeListeners()
         launchScreenInRightMode()
-        setViewModelObservers()
+        setViewModelObservers()*/
     }
 
-    private fun launchScreenInRightMode() {
+    /*private fun launchScreenInRightMode() {
         when (screenMode) {
             MODE_ADD -> {
                 launchScreenInAddMode()
@@ -148,7 +148,7 @@ class ShopItemActivity : AppCompatActivity() {
             }
             shopItemId = intent.getIntExtra(KEY_SHOP_ITEM_ID, ShopItem.UNSPECIFIED_ID)
         }
-    }
+    }*/
 
     companion object {
         const val MODE_ADD = "mode_add"
