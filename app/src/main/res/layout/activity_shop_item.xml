@@ -21,6 +21,7 @@
             android:id="@+id/etName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textCapWords"
             android:hint="@string/hint_product_name" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -29,7 +30,7 @@
         android:id="@+id/tilQuantity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/bAddToList"
+        app:layout_constraintBottom_toTopOf="@+id/bSaveToList"
         app:layout_constraintTop_toBottomOf="@+id/tilName"
         tools:layout_editor_absoluteX="8dp">
 
@@ -37,12 +38,13 @@
             android:id="@+id/etQuantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="@string/hint_quantity" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/bAddToList"
+        android:id="@+id/bSaveToList"
         android:padding="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

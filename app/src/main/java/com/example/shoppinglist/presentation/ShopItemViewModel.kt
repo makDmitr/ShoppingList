@@ -68,20 +68,22 @@ class ShopItemViewModel : ViewModel() {
         _shopItem.value = item
     }
 
-    private fun validateInputData(name: String, quantity: Int): Boolean {
-        return validateName(name) && validateQuantity(quantity)
-    }
-
     private fun parseName(productName: String?): String {
         return productName?.trim() ?: ""
     }
 
     private fun parseQuantity(quantity: String?): Int {
         return try {
-            quantity?.toInt() ?: 0
+            quantity?.trim()?.toInt() ?: 0
         } catch (e: Exception) {
             0
         }
+    }
+
+    private fun validateInputData(name: String, quantity: Int): Boolean {
+        val isNameValid = validateName(name)
+        val isQuantityValid = validateQuantity(quantity)
+        return isNameValid && isQuantityValid
     }
 
     private fun validateName(name: String): Boolean {
