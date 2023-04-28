@@ -15,116 +15,32 @@ import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemActivity : AppCompatActivity() {
 
-    /*private lateinit var tilName: TextInputLayout
-    private lateinit var tilQuantity: TextInputLayout
-    //TextInput or EditText?
-    private lateinit var etName: TextInputEditText
-    private lateinit var etQuantity: TextInputEditText
-
-    private lateinit var bSaveToList: Button
-
-    private lateinit var viewModel: ShopItemViewModel
-
     private var screenMode = UNSPECIFIED_MODE
-    private var shopItemId = ShopItem.UNSPECIFIED_ID*/
+    private var shopItemId = ShopItem.UNSPECIFIED_ID
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
-        /*parseIntent()
 
-        initViews()
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-
-        addTextChangeListeners()
+        parseIntent()
         launchScreenInRightMode()
-        setViewModelObservers()*/
     }
 
-    /*private fun launchScreenInRightMode() {
-        when (screenMode) {
+    private fun launchScreenInRightMode() {
+        val fragment = when (screenMode) {
             MODE_ADD -> {
-                launchScreenInAddMode()
+                ShopItemFragment.newInstanceAddMode()
             }
             MODE_EDIT -> {
-                launchScreenInEditMode()
+                ShopItemFragment.newInstanceEditMode(shopItemId)
             }
+            else -> throw java.lang.RuntimeException(
+                "ShopItemActivity can work only in mode=" +
+                        "$MODE_ADD or mode=$MODE_EDIT. Current mode=$screenMode"
+            )
         }
-    }
-
-    private fun launchScreenInAddMode() {
-        bSaveToList.setOnClickListener {
-            val inputName = etName.text.toString()
-            val inputQuantity = etQuantity.text.toString()
-            viewModel.addShopItem(inputName, inputQuantity)
-        }
-    }
-
-    private fun launchScreenInEditMode() {
-        viewModel.getShopItem(shopItemId)
-
-        viewModel.shopItem.observe(this) {
-            etName.setText(it.name)
-            etQuantity.setText(it.quantity.toString())
-        }
-
-        bSaveToList.setOnClickListener {
-            val inputName = etName.text.toString()
-            val inputQuantity = etQuantity.text.toString()
-            viewModel.editShopItem(inputName, inputQuantity)
-        }
-    }
-
-    private fun setViewModelObservers() {
-        viewModel.inputErrorName.observe(this) {
-            if (it) {
-                tilName.error = getString(R.string.error_name)
-            } else {
-                tilName.error = null
-            }
-        }
-
-        viewModel.inputErrorQuantity.observe(this) {
-            if (it) {
-                tilQuantity.error = getString(R.string.error_quantity)
-            } else {
-                tilQuantity.error = null
-            }
-        }
-
-        viewModel.canCloseScreen.observe(this) {
-            finish()
-        }
-    }
-
-    private fun addTextChangeListeners() {
-        etName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetInputErrorName()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        etQuantity.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetInputErrorQuantity()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-    }
-
-
-    private fun initViews() {
-        tilName = findViewById(R.id.tilName)
-        tilQuantity = findViewById(R.id.tilQuantity)
-        etName = findViewById(R.id.etName)
-        etQuantity = findViewById(R.id.etQuantity)
-        bSaveToList = findViewById(R.id.bSaveToList)
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fcvShopItem, fragment)
+            .commit()
     }
 
     private fun parseIntent() {
@@ -148,7 +64,7 @@ class ShopItemActivity : AppCompatActivity() {
             }
             shopItemId = intent.getIntExtra(KEY_SHOP_ITEM_ID, ShopItem.UNSPECIFIED_ID)
         }
-    }*/
+    }
 
     companion object {
         const val MODE_ADD = "mode_add"
