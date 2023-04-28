@@ -73,7 +73,7 @@ class ShopItemActivity : AppCompatActivity() {
         private const val KEY_MODE = "key_mode"
         private const val KEY_SHOP_ITEM_ID = "shop_item_id"
 
-        private const val UNSPECIFIED_MODE = ""
+        private const val UNSPECIFIED_MODE = "mode_unspecified"
 
         fun newIntentAddMode(startFrom: Context): Intent {
             val intent = Intent(startFrom, ShopItemActivity::class.java)

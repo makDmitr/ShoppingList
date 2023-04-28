@@ -14,10 +14,7 @@ import com.example.shoppinglist.domain.ShopItem
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemFragment(
-    private val screenMode: String = UNSPECIFIED_MODE,
-    private val shopItemId: Int = ShopItem.UNSPECIFIED_ID
-) : Fragment() {
+class ShopItemFragment: Fragment() {
 
     private lateinit var tilName: TextInputLayout
     private lateinit var tilQuantity: TextInputLayout
@@ -28,6 +25,14 @@ class ShopItemFragment(
     private lateinit var bSaveToList: Button
 
     private lateinit var viewModel: ShopItemViewModel
+
+    private var screenMode: String = UNSPECIFIED_MODE
+    private var shopItemId: Int = ShopItem.UNSPECIFIED_ID
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseParams()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -141,32 +146,57 @@ class ShopItemFragment(
         bSaveToList = view.findViewById(R.id.bSaveToList)
     }
 
+
     private fun parseParams() {
-        if (screenMode != MODE_ADD && screenMode != MODE_EDIT) {
+        val args = requireArguments()
+
+        if (!args.containsKey(KEY_MODE)) {
+            throw java.lang.RuntimeException("There is no specified mode for ShopItemFragment")
+        }
+
+        val mode = args.getString(KEY_MODE)
+        if (mode != MODE_ADD && mode != MODE_EDIT) {
             throw java.lang.RuntimeException(
-                "ShopItemActivity can work only in mode=$MODE_ADD or mode=$MODE_EDIT." +
-                        "Current mode is $screenMode"
+                "ShopItemFragment can work only in mode=" +
+                        "$MODE_ADD or mode=$MODE_EDIT. Current mode=$mode"
             )
         }
-        if (screenMode == MODE_EDIT && shopItemId == ShopItem.UNSPECIFIED_ID) {
-            throw java.lang.RuntimeException(
-                "You started ShopItemActivity in $MODE_EDIT, but didn't specify shopItemId."
-            )
+        screenMode = mode
+
+        if (screenMode == MODE_EDIT) {
+            if (!args.containsKey(KEY_SHOP_ITEM_ID)) {
+                throw java.lang.RuntimeException("You started ShopItemFragment in $MODE_EDIT, " +
+                        "but didn't specify shopItemId")
+            }
+            shopItemId = args.getInt(KEY_SHOP_ITEM_ID, ShopItem.UNSPECIFIED_ID)
         }
     }
 
     companion object {
         const val MODE_ADD = "mode_add"
         const val MODE_EDIT = "mode_edit"
+        private const val UNSPECIFIED_MODE = "mode_unspecified"
+
+        private const val KEY_MODE = "key_mode"
+        private const val KEY_SHOP_ITEM_ID = "shop_item_id"
 
         fun newInstanceAddMode(): ShopItemFragment {
-            return ShopItemFragment(MODE_ADD)
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(KEY_MODE, MODE_ADD)
+                }
+            }
         }
 
         fun newInstanceEditMode(shopItemId: Int): ShopItemFragment {
-            return ShopItemFragment(MODE_EDIT, shopItemId)
+            return ShopItemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(KEY_MODE, MODE_EDIT)
+                    putInt(KEY_SHOP_ITEM_ID, shopItemId)
+                }
+            }
         }
 
-        private const val UNSPECIFIED_MODE = ""
+
     }
 }
