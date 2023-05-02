@@ -3,6 +3,7 @@ package com.example.shoppinglist.presentation
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,7 @@ class ShopItemFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parseParams()
+        Log.d(TAG, "onCreate: ")
     }
 
     override fun onCreateView(
@@ -39,6 +41,7 @@ class ShopItemFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(TAG, "onCreateView: ")
         return inflater.inflate(
             R.layout.fragment_shop_item,
             container,
@@ -179,6 +182,8 @@ class ShopItemFragment: Fragment() {
 
         private const val KEY_MODE = "key_mode"
         private const val KEY_SHOP_ITEM_ID = "shop_item_id"
+
+        private const val TAG = "ShopItemFragment"
 
         fun newInstanceAddMode(): ShopItemFragment {
             return ShopItemFragment().apply {

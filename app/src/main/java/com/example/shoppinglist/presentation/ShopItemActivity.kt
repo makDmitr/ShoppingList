@@ -22,7 +22,11 @@ class ShopItemActivity : AppCompatActivity() {
         setContentView(R.layout.activity_shop_item)
 
         parseIntent()
-        launchScreenInRightMode()
+
+        if (savedInstanceState == null) {
+            launchScreenInRightMode()
+        }
+
     }
 
     private fun launchScreenInRightMode() {
@@ -39,7 +43,7 @@ class ShopItemActivity : AppCompatActivity() {
             )
         }
         supportFragmentManager.beginTransaction()
-            .add(R.id.fcvShopItem, fragment)
+            .replace(R.id.fcvShopItem, fragment)
             .commit()
     }
 
