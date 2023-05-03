@@ -12,7 +12,7 @@ import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedEditingListener {
 
     companion object {
         private const val TAG = "MainActivity"
@@ -133,6 +133,10 @@ class MainActivity : AppCompatActivity() {
         adapter.onLongClickListener = {
             viewModel.changeActiveState(it)
         }
+    }
+
+    override fun onFinishedEditing() {
+        this.onBackPressed()
     }
 }
 

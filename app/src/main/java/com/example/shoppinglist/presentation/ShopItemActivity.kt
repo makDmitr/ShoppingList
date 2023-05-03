@@ -13,7 +13,7 @@ import com.example.shoppinglist.domain.ShopItem
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnFinishedEditingListener {
 
     private var screenMode = UNSPECIFIED_MODE
     private var shopItemId = ShopItem.UNSPECIFIED_ID
@@ -68,6 +68,10 @@ class ShopItemActivity : AppCompatActivity() {
             }
             shopItemId = intent.getIntExtra(KEY_SHOP_ITEM_ID, ShopItem.UNSPECIFIED_ID)
         }
+    }
+
+    override fun onFinishedEditing() {
+        finish()
     }
 
     companion object {

@@ -1,5 +1,7 @@
 package com.example.shoppinglist.presentation
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +19,8 @@ import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemFragment: Fragment() {
 
+    private lateinit var onFinishedEditingListener: OnFinishedEditingListener
+
     private lateinit var tilName: TextInputLayout
     private lateinit var tilQuantity: TextInputLayout
 
@@ -29,6 +33,16 @@ class ShopItemFragment: Fragment() {
 
     private var screenMode: String = UNSPECIFIED_MODE
     private var shopItemId: Int = ShopItem.UNSPECIFIED_ID
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFinishedEditingListener) {
+            onFinishedEditingListener = context
+        } else {
+            throw java.lang.RuntimeException("Activity: $context must implement " +
+                    "OnFinishedEditingListener interface to use ''ShopItemFragment'' fragment")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +62,7 @@ class ShopItemFragment: Fragment() {
             false
         )
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -114,7 +129,7 @@ class ShopItemFragment: Fragment() {
         }
 
         viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
+            onFinishedEditingListener.onFinishedEditing()
         }
     }
 
@@ -148,7 +163,6 @@ class ShopItemFragment: Fragment() {
         etQuantity = view.findViewById(R.id.etQuantity)
         bSaveToList = view.findViewById(R.id.bSaveToList)
     }
-
 
     private fun parseParams() {
         val args = requireArguments()
@@ -204,4 +218,42 @@ class ShopItemFragment: Fragment() {
 
 
     }
+
+    interface OnFinishedEditingListener {
+        fun onFinishedEditing()
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
