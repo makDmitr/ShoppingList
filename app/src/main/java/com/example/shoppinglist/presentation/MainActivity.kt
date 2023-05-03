@@ -1,27 +1,31 @@
 package com.example.shoppinglist.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
-import com.example.shoppinglist.domain.ShopItem
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.OnFinishedEditingListener {
 
     companion object {
         private const val TAG = "MainActivity"
     }
 
-    val listsInSubmitList = mutableListOf<List<ShopItem>>()
-
     private lateinit var viewModel: MainViewModel
 
     private lateinit var adapter: ShopItemsAdapter
+
+    private var fcvShopItem: FragmentContainerView? = null
+
+    private val isLandscape: Boolean
+        get() {
+            return fcvShopItem != null
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,19 +33,37 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
+        val fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
+
+        fcvShopItem = findViewById(R.id.fcvShopItem)
+
         setupRecyclerView()
 
-        val fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
-        fabAdd.setOnClickListener {
-            val intent = ShopItemActivity.newIntentAddMode(this)
-            startActivity(intent)
+        if (isLandscape) {
+            fabAdd.setOnClickListener {
+                launchFragment(ShopItemFragment.newInstanceAddMode())
+            }
+        } else {
+            fabAdd.setOnClickListener {
+                val intent = ShopItemActivity.newIntentAddMode(this)
+                startActivity(intent)
+            }
         }
 
         viewModel.shopItemsList.observe(this) {
-            listsInSubmitList.add(it)
             adapter.submitList(it)
         }
 
+    }
+
+    private fun launchFragment(fragment: ShopItemFragment) {
+        val fragmentManager = supportFragmentManager
+
+        fragmentManager.popBackStack()
+        fragmentManager.beginTransaction()
+            .replace(R.id.fcvShopItem, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun setupRecyclerView() {
@@ -62,8 +84,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupAdapterOnLongClickListener()
-        setupAdapterOnClickListener()
         setupRecyclerViewSwipes(rvShopItems)
+
+        setupAdapterOnClickListener()
+    }
+
+    private fun setupAdapterOnClickListener() {
+        if (isLandscape) {
+            adapter.onClickListener = {
+                launchFragment(ShopItemFragment.newInstanceEditMode(it.id))
+            }
+        } else {
+            adapter.onClickListener = {
+                val intent = ShopItemActivity.newIntentEditMode(
+                    this,
+                    it.id
+                )
+                startActivity(intent)
+            }
+        }
     }
 
     private fun setupRecyclerViewSwipes(rvShopItems: RecyclerView) {
@@ -88,21 +127,14 @@ class MainActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(rvShopItems)
     }
 
-    private fun setupAdapterOnClickListener() {
-        adapter.onClickListener = {
-            val intent = ShopItemActivity.newIntentEditMode(
-                this,
-                it.id
-            )
-            Log.d("TMP", "setupAdapterOnClickListener: ${it.toString()}")
-            startActivity(intent)
-        }
-    }
-
     private fun setupAdapterOnLongClickListener() {
         adapter.onLongClickListener = {
             viewModel.changeActiveState(it)
         }
+    }
+
+    override fun onFinishedEditing() {
+        this.onBackPressed()
     }
 }
 

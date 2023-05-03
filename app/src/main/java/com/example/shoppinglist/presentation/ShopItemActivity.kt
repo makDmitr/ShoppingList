@@ -2,129 +2,43 @@ package com.example.shoppinglist.presentation
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.Button
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemActivity : AppCompatActivity() {
-
-    private lateinit var tilName: TextInputLayout
-    private lateinit var tilQuantity: TextInputLayout
-    //TextInput or EditText?
-    private lateinit var etName: TextInputEditText
-    private lateinit var etQuantity: TextInputEditText
-
-    private lateinit var bSaveToList: Button
-
-    private lateinit var viewModel: ShopItemViewModel
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnFinishedEditingListener {
 
     private var screenMode = UNSPECIFIED_MODE
     private var shopItemId = ShopItem.UNSPECIFIED_ID
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
+
         parseIntent()
 
-        initViews()
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+        if (savedInstanceState == null) {
+            launchScreenInRightMode()
+        }
 
-        addTextChangeListeners()
-        launchScreenInRightMode()
-        setViewModelObservers()
     }
 
     private fun launchScreenInRightMode() {
-        when (screenMode) {
+        val fragment = when (screenMode) {
             MODE_ADD -> {
-                launchScreenInAddMode()
+                ShopItemFragment.newInstanceAddMode()
             }
             MODE_EDIT -> {
-                launchScreenInEditMode()
+                ShopItemFragment.newInstanceEditMode(shopItemId)
             }
+            else -> throw java.lang.RuntimeException(
+                "ShopItemActivity can work only in mode=" +
+                        "$MODE_ADD or mode=$MODE_EDIT. Current mode=$screenMode"
+            )
         }
-    }
-
-    private fun launchScreenInAddMode() {
-        bSaveToList.setOnClickListener {
-            val inputName = etName.text.toString()
-            val inputQuantity = etQuantity.text.toString()
-            viewModel.addShopItem(inputName, inputQuantity)
-        }
-    }
-
-    private fun launchScreenInEditMode() {
-        viewModel.getShopItem(shopItemId)
-
-        viewModel.shopItem.observe(this) {
-            etName.setText(it.name)
-            etQuantity.setText(it.quantity.toString())
-        }
-
-        bSaveToList.setOnClickListener {
-            val inputName = etName.text.toString()
-            val inputQuantity = etQuantity.text.toString()
-            viewModel.editShopItem(inputName, inputQuantity)
-        }
-    }
-
-    private fun setViewModelObservers() {
-        viewModel.inputErrorName.observe(this) {
-            if (it) {
-                tilName.error = getString(R.string.error_name)
-            } else {
-                tilName.error = null
-            }
-        }
-
-        viewModel.inputErrorQuantity.observe(this) {
-            if (it) {
-                tilQuantity.error = getString(R.string.error_quantity)
-            } else {
-                tilQuantity.error = null
-            }
-        }
-
-        viewModel.canCloseScreen.observe(this) {
-            finish()
-        }
-    }
-
-    private fun addTextChangeListeners() {
-        etName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetInputErrorName()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        etQuantity.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.resetInputErrorQuantity()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
-    }
-
-
-    private fun initViews() {
-        tilName = findViewById(R.id.tilName)
-        tilQuantity = findViewById(R.id.tilQuantity)
-        etName = findViewById(R.id.etName)
-        etQuantity = findViewById(R.id.etQuantity)
-        bSaveToList = findViewById(R.id.bSaveToList)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fcvShopItem, fragment)
+            .commit()
     }
 
     private fun parseIntent() {
@@ -150,6 +64,10 @@ class ShopItemActivity : AppCompatActivity() {
         }
     }
 
+    override fun onFinishedEditing() {
+        finish()
+    }
+
     companion object {
         const val MODE_ADD = "mode_add"
         const val MODE_EDIT = "mode_edit"
@@ -157,7 +75,7 @@ class ShopItemActivity : AppCompatActivity() {
         private const val KEY_MODE = "key_mode"
         private const val KEY_SHOP_ITEM_ID = "shop_item_id"
 
-        private const val UNSPECIFIED_MODE = ""
+        private const val UNSPECIFIED_MODE = "mode_unspecified"
 
         fun newIntentAddMode(startFrom: Context): Intent {
             val intent = Intent(startFrom, ShopItemActivity::class.java)

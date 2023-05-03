@@ -1,12 +1,9 @@
 package com.example.shoppinglist.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.shoppinglist.domain.ShopItem
 import com.example.shoppinglist.domain.ShopItemRepository
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.random.Random
 
 object ShopItemRepositoryImpl: ShopItemRepository {
@@ -18,7 +15,7 @@ object ShopItemRepositoryImpl: ShopItemRepository {
 
     private val shopItemsLiveData = MutableLiveData<List<ShopItem>>()
     init {
-        for (i in 0 until 100) {
+        for (i in 0 until 20) {
             val currentShopItem = ShopItem("Name$i", i, Random.nextBoolean())
             addShopItem(currentShopItem)
         }
